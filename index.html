@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CatTales — истории, которые мурлычут</title>
+
+  <style>
+    :root {
+      --pink: #ff8fb8;
+      --pink-dark: #e96d9c;
+      --blue: #8ed8f8;
+      --blue-dark: #54b9df;
+      --cream: #fffaf5;
+      --cream-2: #fff3f7;
+      --text: #403a46;
+      --muted: #8b8390;
+      --white: #ffffff;
+      --border: #f0dce5;
+      --shadow: 0 14px 40px rgba(117, 80, 102, 0.12);
+      --success: #78c6a3;
+      --danger: #ee7777;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 143, 184, .18), transparent 25%),
+        radial-gradient(circle at 90% 15%, rgba(142, 216, 248, .20), transparent 25%),
+        linear-gradient(135deg, #fffafd 0%, #f7fcff 100%);
+      overflow-x: hidden;
+      transition: background .4s ease, color .4s ease;
+    }
+
+    body.dark {
+      --cream: #211e27;
+      --cream-2: #29252f;
+      --text: #f8eef4;
+      --muted: #b9aeba;
+      --white: #302b37;
+      --border: #473e4b;
+      --shadow: 0 14px 40px rgba(0, 0, 0, .25);
+
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 143, 184, .13), transparent 25%),
+        radial-gradient(circle at 90% 15%, rgba(142, 216, 248, .10), transparent 25%),
+        #17151b;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* -------------------------
+       PAW CURSOR
+    ------------------------- */
+
+    body,
+    button,
+    select,
+    input,
+    textarea,
+    a {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='%23ff8fb8'%3E%3Cellipse cx='16' cy='20' rx='7' ry='8'/%3E%3Cellipse cx='7' cy='13' rx='3.5' ry='4.5'/%3E%3Cellipse cx='14' cy='8' rx='3.5' ry='4.5'/%3E%3Cellipse cx='21' cy='8' rx='3.5' ry='4.5'/%3E%3Cellipse cx='26' cy='13' rx='3.5' ry='4.5'/%3E%3C/g%3E%3C/svg%3E"), auto;
+    }
+
+    /* -------------------------
+       PAW EFFECT
+    ------------------------- */
+
+    .paw-print {
+      position: fixed;
+      width: 25px;
+      height: 25px;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transform: scale(.5) rotate(-15deg);
+      animation: pawFade 1s ease forwards;
+    }
+
+    .paw-print::before {
+      content: "🐾";
+      font-size: 24px;
+    }
+
+    @keyframes pawFade {
+      0% {
+        opacity: .8;
+        transform: scale(.5) rotate(-15deg);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.1) rotate(15deg) translateY(-15px);
+      }
+    }
+
+    /* -------------------------
+       HEADER
+    ------------------------- */
+
+    header {
+      width: min(1200px, calc(100% - 40px));
+      margin: 20px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 25px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo-cat {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+      box-shadow: 0 8px 20px rgba(255, 143, 184, .22);
+      animation: floatCat 3s ease-in-out infinite;
+    }
+
+    @keyframes floatCat {
+      0%, 100% {
+        transform: translateY(0) rotate(-2deg);
+      }
+      50% {
+        transform: translateY(-5px) rotate(2deg);
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-button {
+      width: 43px;
+      height: 43px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.75);
+      color: var(--text);
+      transition: .2s ease;
+    }
+
+    body.dark .icon-button {
+      background: rgba(48,43,55,.8);
+    }
+
+    .icon-button:hover {
+      transform: translateY(-2px);
+      border-color: var(--pink);
+    }
+
+    .language-switcher {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 4px;
+      background: var(--white);
+    }
+
+    .language-switcher button {
+      border: 0;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .language-switcher button.active {
+      background: var(--pink);
+      color: white;
+    }
+
+    /* -------------------------
+       HERO
+    ------------------------- */
+
+    .hero {
+      width: min(1000px, calc(100% - 40px));
+      margin: 55px auto 35px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      border: 1px solid var(--border);
+      color: var(--pink-dark);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: .95;
+      letter-spacing: -3px;
+      font-weight: 950;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #ed77a4, #63bddf);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .floating-cat {
+      position: absolute;
+      font-size: 50px;
+      opacity: .75;
+      animation: floatAround 4s ease-in-out infinite;
+    }
+
+    .floating-cat.left {
+      left: 0;
+      top: 10px;
+    }
+
+    .floating-cat.right {
+      right: 0;
+      bottom: 0;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes floatAround {
+      0%, 100% {
+        transform: translateY(0) rotate(-5deg);
+      }
+      50% {
+        transform: translateY(-13px) rotate(6deg);
+      }
+    }
+
+    /* -------------------------
+       MAIN LAYOUT
+    ------------------------- */
+
+    .app {
+      width: min(1200px, calc(100% - 40px));
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 27px;
+      backdrop-filter: blur(14px);
+    }
+
+    body.dark .panel {
+      background: rgba(48,43,55,.86);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .panel-title h2 {
+      font-size: 21px;
+    }
+
+    .panel-title span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* -------------------------
+       FORM
+    ------------------------- */
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--cream);
+      color: var(--text);
+      border-radius: 15px;
+      padding: 13px 14px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255,143,184,.10);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 82px;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .mode-button {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 11px 9px;
+      background: var(--cream);
+      color: var(--text);
+      text-align: left;
+      font-size: 12px;
+      transition: .2s ease;
+    }
+
+    .mode-button:hover {
+      transform: translateY(-2px);
+      border-color: var(--blue);
+    }
+
+    .mode-button.active {
+      background: linear-gradient(135deg, #fff0f6, #effaff);
+      border-color: var(--pink);
+      box-shadow: 0 5px 14px rgba(255,143,184,.10);
+    }
+
+    body.dark .mode-button.active {
+      background: #3a3039;
+    }
+
+    .mode-icon {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .main-button {
+      border: 0;
+      border-radius: 17px;
+      padding: 15px 20px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(100deg, #ff83b1, #72c9eb);
+      box-shadow: 0 10px 22px rgba(255, 131, 177, .22);
+      transition: .2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 27px rgba(255, 131, 177, .3);
+    }
+
+    .main-button:active {
+      transform: translateY(0);
+    }
+
+    .secondary-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .secondary-button {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 11px;
+      background: var(--cream);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .secondary-button:hover {
+      border-color: var(--blue);
+    }
+
+    /* -------------------------
+       MOCHI
+    ------------------------- */
+
+    .mochi-box {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff1f7, #eefaff);
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    body.dark .mochi-box {
+      background: #342d38;
+    }
+
+    .mochi {
+      width: 57px;
+      height: 57px;
+      min-width: 57px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      background: white;
+      box-shadow: 0 7px 15px rgba(0,0,0,.07);
+      animation: mochiBounce 2.8s ease-in-out infinite;
+    }
+
+    @keyframes mochiBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px) rotate(2deg); }
+    }
+
+    .mochi-text strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .mochi-text span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* -------------------------
+       RESULT
+    ------------------------- */
+
+    .result-container {
+      min-height: 350px;
+      border: 1px dashed var(--border);
+      border-radius: 20px;
+      padding: 21px;
+      background: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-empty {
+      height: 300px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .result-empty .big-cat {
+      font-size: 65px;
+      display: block;
+      margin-bottom: 12px;
+      animation: floatAround 3s ease-in-out infinite;
+    }
+
+    .result-content {
+      animation: resultIn .5s ease;
+    }
+
+    @keyframes resultIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 17px;
+    }
+
+    .result-tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #ffe7f0;
+      color: var(--pink-dark);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    body.dark .result-tag {
+      background: #4b303d;
+    }
+
+    .result-text {
+      white-space: pre-wrap;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .result-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .result-buttons {
+      display: flex;
+      gap: 7px;
+    }
+
+    .small-button {
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      border-radius: 11px;
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* -------------------------
+       DEMO CATS
+    ------------------------- */
+
+    .demo-section {
+      width: min(1200px, calc(100% - 40px));
+      margin: 0 auto 80px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 17px;
+    }
+
+    .section-heading h2 {
+      font-size: 25px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 13px;
+    }
+
+    .cat-card {
+      border: 1px solid var(--border);
+      background: var(--white);
+      border-radius: 19px;
+      padding: 15px;
+      text-align: left;
+      transition: .25s ease;
+      box-shadow: 0 7px 20px rgba(0,0,0,.04);
+    }
+
+    .cat-card:hover {
+      transform: translateY(-5px) rotate(.3deg);
+      border-color: var(--pink);
+      box-shadow: var(--shadow);
+    }
+
+    .cat-avatar {
+      width: 57px;
+      height: 57px;
+      display: grid;
+      place-items: center;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #fff0f6, #eafaff);
+      font-size: 31px;
+      margin-bottom: 10px;
+    }
+
+    .cat-card h3 {
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .cat-card p {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* -------------------------
+       HISTORY
+    ------------------------- */
+
+    .history-panel {
+      width: min(1200px, calc(100% - 40px));
+      margin: 0 auto 80px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--white);
+    }
+
+    .history-cat {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: var(--cream-2);
+      font-size: 22px;
+    }
+
+    .history-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .history-info strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .history-info span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .history-open {
+      border: 0;
+      background: transparent;
+      color: var(--pink-dark);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    /* -------------------------
+       TOAST
+    ------------------------- */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translate(-50%, 100px);
+      padding: 12px 18px;
+      background: #312b35;
+      color: white;
+      border-radius: 999px;
+      font-size: 13px;
+      box-shadow: var(--shadow);
+      z-index: 99999;
+      transition: .35s ease;
+      opacity: 0;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    /* -------------------------
+       LOADING
+    ------------------------- */
+
+    .loading {
+      display: grid;
+      gap: 15px;
+      text-align: center;
+      padding: 40px 10px;
+    }
+
+    .loading-cat {
+      font-size: 50px;
+      animation: loadingCat .8s infinite alternate ease-in-out;
+    }
+
+    @keyframes loadingCat {
+      from {
+        transform: translateY(0) rotate(-5deg);
+      }
+      to {
+        transform: translateY(-12px) rotate(5deg);
+      }
+    }
+
+    .dots span {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--pink);
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: dot .8s infinite alternate;
+    }
+
+    .dots span:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .dots span:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes dot {
+      from { transform: translateY(0); }
+      to { transform: translateY(-7px); }
+    }
+
+    /* -------------------------
+       FOOTER
+    ------------------------- */
+
+    footer {
+      width: min(1200px, calc(100% - 40px));
+      margin: 0 auto 35px;
+      padding-top: 25px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* -------------------------
+       RESPONSIVE
+    ------------------------- */
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .cat-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .floating-cat {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header,
+      .hero,
+      .app,
+      .demo-section,
+      .history-panel,
+      footer {
+        width: min(100% - 24px, 1200px);
+      }
+
+      header {
+        margin-top: 12px;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
+      .logo-cat {
+        width: 42px;
+        height: 42px;
+        font-size: 23px;
+      }
+
+      .language-switcher {
+        display: none;
+      }
+
+      .hero {
+        margin-top: 40px;
+      }
+
+      .hero h1 {
+        font-size: 52px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .panel {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+
+    <a class="logo" href="#">
+      <div class="logo-cat">🐱</div>
+      <span>CatTales</span>
+    </a>
+
+    <div class="header-actions">
+
+      <div class="language-switcher">
+        <button class="active" id="ruButton">🇷🇺 RU</button>
+        <button id="enButton">🇬🇧 EN</button>
+      </div>
+
+      <button
+        class="icon-button"
+        id="themeButton"
+        title="Тёмная тема"
+        aria-label="Переключить тему"
+      >
+        🌙
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <div class="floating-cat left">🐾</div>
+    <div class="floating-cat right">🐱</div>
+
+    <div class="hero-badge">
+      ✨ AI-powered cat storyteller
+    </div>
+
+    <h1>CatTales</h1>
+
+    <p id="heroDescription">
+      Создавай красивые, смешные и трогательные истории о котиках,
+      которых можно завести. Познакомь мир с новым пушистым другом.
+    </p>
+
+  </section>
+
+
+  <!-- MAIN APP -->
+  <main class="app">
+
+    <!-- FORM PANEL -->
+    <section class="panel">
+
+      <div class="panel-title">
+        <div>
+          <h2 id="profileTitle">🐾 Профиль котика</h2>
+          <span id="profileSubtitle">Расскажи Mochi немного о своём котике</span>
+        </div>
+      </div>
+
+
+      <!-- MOCHI -->
+      <div class="mochi-box">
+
+        <div class="mochi">😺</div>
+
+        <div class="mochi-text">
+          <strong id="mochiName">Mochi</strong>
+
+          <span id="mochiMessage">
+            Мяу! Давай познакомим всех с этим котиком.
+          </span>
+        </div>
+
+      </div>
+
+
+      <form id="catForm" class="form-grid">
+
+        <div class="form-row">
+
+          <label>
+            <span id="nameLabel">Имя котика</span>
+
+            <input
+              id="catName"
+              type="text"
+              placeholder="Например, Luna"
+              maxlength="50"
+              required
+            />
+
+          </label>
+
+
+          <label>
+            <span id="ageLabel">Возраст</span>
+
+            <input
+              id="catAge"
+              type="text"
+              placeholder="Например, 2 года"
+              maxlength="30"
+            />
+
+          </label>
+
+        </div>
+
+
+        <div class="form-row">
+
+          <label>
+            <span id="breedLabel">Порода</span>
+
+            <input
+              id="catBreed"
+              type="text"
+              placeholder="Например, British Shorthair"
+              maxlength="50"
+            />
+
+          </label>
+
+
+          <label>
+            <span id="colorLabel">Окрас</span>
+
+            <input
+              id="catColor"
+              type="text"
+              placeholder="Например, серо-белый"
+              maxlength="50"
+            />
+
+          </label>
+
+        </div>
+
+
+        <label>
+
+          <span id="personalityLabel">Характер</span>
+
+          <textarea
+            id="catPersonality"
+            maxlength="400"
+            placeholder="Ласковый, игривый, любит людей..."
+          ></textarea>
+
+        </label>
+
+
+        <label>
+
+          <span id="favoriteLabel">Что любит</span>
+
+          <textarea
+            id="catFavorite"
+            maxlength="300"
+            placeholder="Игрушки, спать на диване, смотреть в окно..."
+          ></textarea>
+
+        </label>
+
+
+        <label>
+
+          <span id="detailsLabel">Особенности</span>
+
+          <textarea
+            id="catDetails"
+            maxlength="400"
+            placeholder="Например: боится пылесоса, умеет открывать двери..."
+          ></textarea>
+
+        </label>
+
+
+        <!-- MODES -->
+
+        <label>
+          <span id="modeLabel">Что создаём?</span>
+        </label>
+
+        <div class="mode-grid">
+
+          <button
+            type="button"
+            class="mode-button active"
+            data-mode="profile"
+          >
+            <span class="mode-icon">🏠</span>
+            <span data-mode-text="profile">Профиль для пристройства</span>
+          </button>
+
+
+          <button
+            type="button"
+            class="mode-button"
+            data-mode="instagram"
+          >
+            <span class="mode-icon">📸</span>
+            <span data-mode-text="instagram">Instagram caption</span>
+          </button>
+
+
+          <button
+            type="button"
+            class="mode-button"
+            data-mode="story"
+          >
+            <span class="mode-icon">💕</span>
+            <span data-mode-text="story">Трогательная история</span>
+          </button>
+
+
+          <button
+            type="button"
+            class="mode-button"
+            data-mode="funny"
+          >
+            <span class="mode-icon">😹</span>
+            <span data-mode-text="funny">Смешное описание</span>
+          </button>
+
+
+          <button
+            type="button"
+            class="mode-button"
+            data-mode="bio"
+          >
+            <span class="mode-icon">🐾</span>
+            <span data-mode-text="bio">Короткая биография</span>
+          </button>
+
+
+          <button
+            type="button"
+            class="mode-button"
+            data-mode="social"
+          >
+            <span class="mode-icon">📢</span>
+            <span data-mode-text="social">Пост для соцсетей</span>
+          </button>
+
+        </div>
+
+
+        <!-- GENERATE -->
+
+        <button
+          type="submit"
+          class="main-button"
+          id="generateButton"
+        >
+          ✨ Сгенерировать с помощью Mochi
+        </button>
+
+
+        <div class="secondary-actions">
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="surpriseButton"
+          >
+            🎲 Surprise Me
+          </button>
+
+          <button
+            type="button"
+            class="secondary-button"
+            id="clearButton"
+          >
+            🧹 Очистить
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+
+    <!-- RESULT PANEL -->
+
+    <section class="panel">
+
+      <div class="panel-title">
+
+        <div>
+          <h2 id="resultTitle">✨ История котика</h2>
+          <span id="resultSubtitle">Здесь появится твой текст</span>
+        </div>
+
+      </div>
+
+
+      <div class="result-container" id="resultContainer">
+
+        <div class="result-empty" id="resultEmpty">
+
+          <div>
+            <span class="big-cat">🐱</span>
+
+            <strong id="emptyTitle">
+              Здесь пока тихо...
+            </strong>
+
+            <p id="emptyText" style="margin-top:7px;">
+              Заполни профиль котика и позволь Mochi написать его историю.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- DEMO CATS -->
+
+  <section class="demo-section">
+
+    <div class="section-heading">
+
+      <div>
+        <h2 id="demoTitle">🐱 Познакомься с котиками</h2>
+        <p id="demoSubtitle">
+          Нажми на котика — и его профиль автоматически заполнится.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="cat-grid" id="catGrid"></div>
+
+  </section>
+
+
+  <!-- HISTORY -->
+
+  <section class="history-panel">
+
+    <div class="section-heading">
+
+      <div>
+        <h2 id="historyTitle">📚 Истории Mochi</h2>
+
+        <p id="historySubtitle">
+          Твои предыдущие генерации
+        </p>
+      </div>
+
+    </div>
+
+
+    <div
+      class="history-list"
+      id="historyList"
+    >
+      <p style="color:var(--muted);font-size:13px;">
+        Пока здесь пусто. Создай первую историю 🐾
+      </p>
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <span>
+      🐾 CatTales · Made with love &amp; a little bit of cat hair
+    </span>
+
+    <span>
+      Mochi AI Assistant © 2026
+    </span>
+
+  </footer>
+
+
+  <!-- TOAST -->
+
+  <div
+    class="toast"
+    id="toast"
+  >
+    Скопировано! 🐾
+  </div>
+
+
+<script>
+
+  /* =========================================================
+     CATTALES
+     Demo frontend.
+     Позже здесь будет подключён server.js + настоящий AI.
+  ========================================================= */
+
+
+  /* -------------------------
+     TRANSLATIONS
+  ------------------------- */
+
+  const translations = {
+
+    ru: {
+      hero:
+        "Создавай красивые, смешные и трогательные истории о котиках, которых можно завести. Познакомь мир с новым пушистым другом.",
+
+      profileTitle: "🐾 Профиль котика",
+      profileSubtitle: "Расскажи Mochi немного о своём котике",
+
+      mochiMessage:
+        "Мяу! Давай познакомим всех с этим котиком.",
+
+      name: "Имя котика",
+      age: "Возраст",
+      breed: "Порода",
+      color: "Окрас",
+      personality: "Характер",
+      favorite: "Что любит",
+      details: "Особенности",
+      mode: "Что создаём?",
+
+      namePlaceholder: "Например, Luna",
+      agePlaceholder: "Например, 2 года",
+      breedPlaceholder: "Например, British Shorthair",
+      colorPlaceholder: "Например, серо-белый",
+      personalityPlaceholder:
+        "Ласковый, игривый, любит людей...",
+      favoritePlaceholder:
+        "Игрушки, спать на диване, смотреть в окно...",
+      detailsPlaceholder:
+        "Например: боится пылесоса, умеет открывать двери...",
+
+      generate:
+        "✨ Сгенерировать с помощью Mochi",
+
+      surprise:
+        "🎲 Surprise Me",
+
+      clear:
+        "🧹 Очистить",
+
+      resultTitle:
+        "✨ История котика",
+
+      resultSubtitle:
+        "Здесь появится твой текст",
+
+      emptyTitle:
+        "Здесь пока тихо...",
+
+      emptyText:
+        "Заполни профиль котика и позволь Mochi написать его историю.",
+
+      demoTitle:
+        "🐱 Познакомься с котиками",
+
+      demoSubtitle:
+        "Нажми на котика — и его профиль автоматически заполнится.",
+
+      historyTitle:
+        "📚 Истории Mochi",
+
+      historySubtitle:
+        "Твои предыдущие генерации",
+
+      emptyHistory:
+        "Пока здесь пусто. Создай первую историю 🐾",
+
+      copied:
+        "Скопировано! 🐾",
+
+      generated:
+        "Готово! Mochi постарался 😺",
+
+      regenerate:
+        "🔄 Заново",
+
+      copy:
+        "📋 Копировать",
+
+      words:
+        "слов",
+
+      chars:
+        "симв.",
+
+      loading:
+        "Mochi сочиняет историю...",
+
+      surpriseMessage:
+        "Mochi выбрал случайного котика! 🎲"
+    },
+
+
+    en: {
+      hero:
+        "Create beautiful, funny and heartwarming stories about cats looking for their forever home.",
+
+      profileTitle: "🐾 Cat Profile",
+      profileSubtitle: "Tell Mochi a little about this cat",
+
+      mochiMessage:
+        "Meow! Let's introduce this little friend to the world.",
+
+      name: "Cat's name",
+      age: "Age",
+      breed: "Breed",
+      color: "Color",
+      personality: "Personality",
+      favorite: "Favorite things",
+      details: "Special details",
+      mode: "What should we create?",
+
+      namePlaceholder: "For example, Luna",
+      agePlaceholder: "For example, 2 years",
+      breedPlaceholder: "For example, British Shorthair",
+      colorPlaceholder: "For example, grey and white",
+      personalityPlaceholder:
+        "Sweet, playful, loves people...",
+      favoritePlaceholder:
+        "Toys, sleeping on the sofa, watching birds...",
+      detailsPlaceholder:
+        "For example: afraid of vacuum cleaners...",
+
+      generate:
+        "✨ Generate with Mochi",
+
+      surprise:
+        "🎲 Surprise Me",
+
+      clear:
+        "🧹 Clear",
+
+      resultTitle:
+        "✨ Cat's Story",
+
+      resultSubtitle:
+        "Your story will appear here",
+
+      emptyTitle:
+        "It's quiet here...",
+
+      emptyText:
+        "Fill in the cat profile and let Mochi write their story.",
+
+      demoTitle:
+        "🐱 Meet the cats",
+
+      demoSubtitle:
+        "Click a cat to automatically fill their profile.",
+
+      historyTitle:
+        "📚 Mochi's Stories",
+
+      historySubtitle:
+        "Your previous generations",
+
+      emptyHistory:
+        "Nothing here yet. Create your first story 🐾",
+
+      copied:
+        "Copied! 🐾",
+
+      generated:
+        "Done! Mochi did his best 😺",
+
+      regenerate:
+        "🔄 Regenerate",
+
+      copy:
+        "📋 Copy",
+
+      words:
+        "words",
+
+      chars:
+        "chars",
+
+      loading:
+        "Mochi is writing a story...",
+
+      surpriseMessage:
+        "Mochi picked a random cat! 🎲"
+    }
+
+  };
+
+
+  /* -------------------------
+     DEMO CATS
+  ------------------------- */
+
+  const cats = [
+
+    {
+      name: "Mochi",
+      age: "1 год",
+      breed: "Домашний короткошёрстный",
+      color: "Белый с рыжими пятнышками",
+      personality: "Очень ласковый, любопытный и игривый.",
+      favorite: "Плюшевые мышки, солнечные подоконники и внимание человека.",
+      details: "Может часами наблюдать за птицами из окна.",
+      emoji: "😺"
+    },
+
+    {
+      name: "Luna",
+      age: "2 года",
+      breed: "Британская короткошёрстная",
+      color: "Серо-голубой",
+      personality: "Спокойная, нежная и немного загадочная.",
+      favorite: "Спать на мягком пледе и получать поглаживания.",
+      details: "Сначала стесняется новых людей, но быстро привязывается.",
+      emoji: "🐱"
+    },
+
+    {
+      name: "Oliver",
+      age: "3 года",
+      breed: "Домашний короткошёрстный",
+      color: "Рыже-белый",
+      personality: "Общительный, весёлый и очень разговорчивый.",
+      favorite: "Играть с мячиками и встречать людей у двери.",
+      details: "Имеет очень громкое и выразительное «мяу».",
+      emoji: "😸"
+    },
+
+    {
+      name: "Nala",
+      age: "1.5 года",
+      breed: "Трёхцветная",
+      color: "Черепаховый",
+      personality: "Нежная, активная и невероятно любопытная.",
+      favorite: "Перья, коробки и исследование новых мест.",
+      details: "Любит засыпать рядом с человеком.",
+      emoji: "😽"
+    },
+
+    {
+      name: "Simba",
+      age: "4 года",
+      breed: "Домашний длинношёрстный",
+      color: "Золотисто-рыжий",
+      personality: "Добрый, уверенный и очень спокойный.",
+      favorite: "Сидеть рядом с человеком и получать расчёсывание.",
+      details: "Настоящий пушистый джентльмен.",
+      emoji: "😼"
+    },
+
+    {
+      name: "Milo",
+      age: "8 месяцев",
+      breed: "Домашний короткошёрстный",
+      color: "Серый с белым",
+      personality: "Энергичный, смешной и озорной.",
+      favorite: "Игрушки и всё, что нельзя трогать.",
+      details: "Считает каждую коробку своей личной недвижимостью.",
+      emoji: "😹"
+    },
+
+    {
+      name: "Cleo",
+      age: "2.5 года",
+      breed: "Домашняя короткошёрстная",
+      color: "Чёрно-белый",
+      personality: "Умная, ласковая и немного независимая.",
+      favorite: "Наблюдать за происходящим с высокой точки.",
+      details: "Сама выбирает, когда ей нужны обнимашки.",
+      emoji: "🐈"
+    },
+
+    {
+      name: "Leo",
+      age: "5 лет",
+      breed: "Персидский метис",
+      color: "Кремовый",
+      personality: "Флегматичный, ласковый и очень уютный.",
+      favorite: "Сон, вкусный корм и спокойные вечера.",
+      details: "Профессиональный эксперт по дневному сну.",
+      emoji: "😻"
+    },
+
+    {
+      name: "Misty",
+      age: "1 год",
+      breed: "Домашняя короткошёрстная",
+      color: "Светло-серый",
+      personality: "Нежная, осторожная и очень преданная.",
+      favorite: "Играть с ленточками и сидеть рядом.",
+      details: "Ей требуется немного времени, чтобы довериться.",
+      emoji: "🙀"
+    },
+
+    {
+      name: "Toby",
+      age: "6 месяцев",
+      breed: "Домашний короткошёрстный",
+      color: "Белый с чёрными пятнами",
+      personality: "Безумно игривый и полный энергии.",
+      favorite: "Бегать по квартире и охотиться на игрушечных мышей.",
+      details: "Может внезапно начать бегать по комнате в 3 часа ночи.",
+      emoji: "😹"
+    },
+
+    {
+      name: "Bella",
+      age: "3 года",
+      breed: "Домашняя короткошёрстная",
+      color: "Белоснежный",
+      personality: "Очень ласковая, спокойная и контактная.",
+      favorite: "Лежать на коленях и мурлыкать.",
+      details: "Мурлычет настолько громко, что её слышно из другой комнаты.",
+      emoji: "😽"
+    },
+
+    {
+      name: "Oscar",
+      age: "6 лет",
+      breed: "Домашний длинношёрстный",
+      color: "Большой рыжий",
+      personality: "Уверенный, добрый и немного ленивый.",
+      favorite: "Спать на диване и смотреть телевизор вместе с человеком.",
+      details: "Уверен, что он не толстый — он просто очень пушистый.",
+      emoji: "😼"
+    }
+
+  ];
+
+
+  /* -------------------------
+     STATE
+  ------------------------- */
+
+  let language = "ru";
+  let selectedMode = "profile";
+  let lastGeneratedText = "";
+  let history = [];
+
+
+  /* -------------------------
+     ELEMENTS
+  ------------------------- */
+
+  const form = document.getElementById("catForm");
+
+  const catName = document.getElementById("catName");
+  const catAge = document.getElementById("catAge");
+  const catBreed = document.getElementById("catBreed");
+  const catColor = document.getElementById("catColor");
+  const catPersonality = document.getElementById("catPersonality");
+  const catFavorite = document.getElementById("catFavorite");
+  const catDetails = document.getElementById("catDetails");
+
+  const resultContainer =
+    document.getElementById("resultContainer");
+
+  const catGrid =
+    document.getElementById("catGrid");
+
+  const historyList =
+    document.getElementById("historyList");
+
+
+  /* -------------------------
+     LANGUAGE
+  ------------------------- */
+
+  function setLanguage(lang) {
+
+    language = lang;
+
+    const t = translations[lang];
+
+    document.getElementById("ruButton")
+      .classList.toggle("active", lang === "ru");
+
+    document.getElementById("enButton")
+      .classList.toggle("active", lang === "en");
+
+    document.documentElement.lang = lang;
+
+    document.getElementById("heroDescription").textContent = t.hero;
+
+    document.getElementById("profileTitle").textContent = t.profileTitle;
+    document.getElementById("profileSubtitle").textContent = t.profileSubtitle;
+
+    document.getElementById("mochiMessage").textContent = t.mochiMessage;
+
+    document.getElementById("nameLabel").textContent = t.name;
+    document.getElementById("ageLabel").textContent = t.age;
+    document.getElementById("breedLabel").textContent = t.breed;
+    document.getElementById("colorLabel").textContent = t.color;
+    document.getElementById("personalityLabel").textContent = t.personality;
+    document.getElementById("favoriteLabel").textContent = t.favorite;
+    document.getElementById("detailsLabel").textContent = t.details;
+    document.getElementById("modeLabel").textContent = t.mode;
+
+    catName.placeholder = t.namePlaceholder;
+    catAge.placeholder = t.agePlaceholder;
+    catBreed.placeholder = t.breedPlaceholder;
+    catColor.placeholder = t.colorPlaceholder;
+    catPersonality.placeholder = t.personalityPlaceholder;
+    catFavorite.placeholder = t.favoritePlaceholder;
+    catDetails.placeholder = t.detailsPlaceholder;
+
+    document.getElementById("generateButton").textContent = t.generate;
+    document.getElementById("surpriseButton").textContent = t.surprise;
+    document.getElementById("clearButton").textContent = t.clear;
+
+    document.getElementById("resultTitle").textContent = t.resultTitle;
+    document.getElementById("resultSubtitle").textContent = t.resultSubtitle;
+
+    document.getElementById("demoTitle").textContent = t.demoTitle;
+    document.getElementById("demoSubtitle").textContent = t.demoSubtitle;
+
+    document.getElementById("historyTitle").textContent = t.historyTitle;
+    document.getElementById("historySubtitle").textContent = t.historySubtitle;
+
+    updateEmptyResult();
+
+    renderHistory();
+  }
+
+
+  document.getElementById("ruButton")
+    .addEventListener("click", () => setLanguage("ru"));
+
+  document.getElementById("enButton")
+    .addEventListener("click", () => setLanguage("en"));
+
+
+  /* -------------------------
+     DEMO CAT CARDS
+  ------------------------- */
+
+  function renderCats() {
+
+    catGrid.innerHTML = "";
+
+    cats.forEach((cat, index) => {
+
+      const card = document.createElement("button");
+
+      card.type = "button";
+      card.className = "cat-card";
+
+      card.innerHTML = `
+        <div class="cat-avatar">${cat.emoji}</div>
+        <h3>${cat.name}</h3>
+        <p>${cat.age} · ${cat.color}</p>
+      `;
+
+      card.addEventListener("click", () => {
+
+        fillCat(cat);
+
+        showToast(
+          language === "ru"
+            ? `${cat.name} выбран! 🐾`
+            : `${cat.name} selected! 🐾`
+        );
+
+        window.scrollTo({
+          top: 250,
+          behavior: "smooth"
+        });
+
+      });
+
+      catGrid.appendChild(card);
+
+    });
+
+  }
+
+
+  /* -------------------------
+     FILL CAT
+  ------------------------- */
+
+  function fillCat(cat) {
+
+    catName.value = cat.name;
+    catAge.value = cat.age;
+    catBreed.value = cat.breed;
+    catColor.value = cat.color;
+    catPersonality.value = cat.personality;
+    catFavorite.value = cat.favorite;
+    catDetails.value = cat.details;
+
+  }
+
+
+  /* -------------------------
+     MODE BUTTONS
+  ------------------------- */
+
+  document
+    .querySelectorAll(".mode-button")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        document
+          .querySelectorAll(".mode-button")
+          .forEach(btn =>
+            btn.classList.remove("active")
+          );
+
+        button.classList.add("active");
+
+        selectedMode =
+          button.dataset.mode;
+
+      });
+
+    });
+
+
+  /* -------------------------
+     DEMO AI GENERATOR
+  ------------------------- */
+
+  function generateDemoText(cat) {
+
+    const name = cat.name;
+    const age = cat.age || "молодой";
+    const breed = cat.breed || "домашний котик";
+    const color = cat.color || "очаровательный";
+    const personality =
+      cat.personality || "добрый и ласковый";
+    const favorite =
+      cat.favorite || "любовь и внимание";
+    const details =
+      cat.details || "у него много интересных привычек";
+
+    if (language === "en") {
+
+      switch (selectedMode) {
+
+        case "instagram":
+
+          return `Meet ${name} 🐾
+
+This ${age} old ${breed} is ${color} and absolutely adorable.
+
+${personality}
+
+${favorite}
+
+${details}
+
+Maybe ${name} is the furry friend you've been looking for. 💕`;
+
+        case "story":
+
+          return `Every cat has a story.
+
+And ${name}'s story is just waiting for its next chapter.
+
+${name} is a ${age} old ${breed} with a ${color} coat and a heart full of personality.
+
+${personality}
+
+One of ${name}'s favorite things is ${favorite.toLowerCase()}.
+
+${details}
+
+All ${name} needs now is someone who will turn this little story into a forever home. 🏠🐾`;
+
+        case "funny":
+
+          return `ATTENTION! 🚨
+
+${name} has officially applied for the position of Your Favorite Cat.
+
+Qualifications:
+• ${personality}
+• Expert at ${favorite.toLowerCase()}
+• Professional ${details.toLowerCase()}
+
+Salary expectations:
+Unlimited treats.
+
+Working hours:
+Whenever ${name} feels like it.
+
+References:
+Available upon request. 😹`;
+
+        case "bio":
+
+          return `${name} · ${age} · ${breed}
+
+${color} coat.
+${personality}
+
+Loves ${favorite.toLowerCase()}.
+
+Special skill: ${details}. 🐾`;
+
+        case "social":
+
+          return `🐾 MEET ${name.toUpperCase()}!
+
+Looking for a furry friend with a big personality?
+
+${name} is a ${age} old ${breed} who is ${personality.toLowerCase()}
+
+Favorite things: ${favorite}
+
+Fun fact: ${details}
+
+Could you be ${name}'s forever human? 💕🏠`;
+
+        default:
+
+          return `Meet ${name}! 🐾
+
+${name} is a ${age} old ${breed} with a beautiful ${color} coat.
+
+${personality}
+
+This lovely cat enjoys ${favorite.toLowerCase()}.
+
+One special thing about ${name}: ${details}.
+
+Now ${name} is looking for a loving forever home — perhaps yours?
+
+If you're looking for a new family member, come meet ${name}. 💕🏠`;
+
+      }
+
+    }
+
+
+    /* Russian */
+
+    switch (selectedMode) {
+
+      case "instagram":
+
+        return `Знакомьтесь — ${name}! 🐾
+
+Этот ${breed.toLowerCase()} в возрасте ${age} обладает ${color.toLowerCase()} окрасом и огромным количеством обаяния.
+
+${personality}
+
+Больше всего ${name} любит: ${favorite.toLowerCase()}.
+
+А ещё у него есть одна особенность: ${details.toLowerCase()}.
+
+Возможно, именно этого пушистого друга вы так долго искали. 💕`;
+
+      case "story":
+
+        return `У каждого котика есть своя история.
+
+И история ${name} сейчас ждёт следующей главы.
+
+${name} — ${breed.toLowerCase()} в возрасте ${age}, с ${color.toLowerCase()} окрасом и очень интересным характером.
+
+${personality}
+
+Больше всего ${name} любит ${favorite.toLowerCase()}.
+
+И есть ещё одна особенность: ${details.toLowerCase()}.
+
+Теперь ${name} нужен человек, который поможет превратить эту маленькую историю в настоящую историю о доме, любви и счастье. 🏠🐾`;
+
+      case "funny":
+
+        return `🚨 СРОЧНОЕ ОБЪЯВЛЕНИЕ 🚨
+
+Котик ${name} официально подал заявку на должность «Ваш любимый член семьи».
+
+Квалификация:
+
+• ${personality}
+• Профессионально умеет наслаждаться: ${favorite.toLowerCase()}
+• Особый талант: ${details.toLowerCase()}
+
+Зарплата:
+Неограниченное количество вкусняшек.
+
+График работы:
+Когда ${name} сам решит.
+
+Опыт работы:
+Несколько жизней. 😹`;
+
+      case "bio":
+
+        return `${name} · ${age} · ${breed}
+
+🐾 Окрас: ${color}
+
+💕 Характер:
+${personality}
+
+❤️ Любит:
+${favorite}
+
+✨ Особенность:
+${details}`;
+
+      case "social":
+
+        return `🐾 ЗНАКОМЬТЕСЬ: ${name.toUpperCase()}!
+
+Ищете пушистого друга с характером?
+
+${name} — ${breed.toLowerCase()}, ${age}.
+
+${personality}
+
+❤️ Любимые занятия:
+${favorite}
+
+😸 Интересный факт:
+${details}
+
+Возможно, именно вы станете тем самым человеком, которого ${name} ждёт.
+
+🏠 Подарите котику шанс на свой настоящий дом. 💕`;
+
+      default:
+
+        return `Знакомьтесь — ${name}! 🐾
+
+Это ${breed.toLowerCase()} в возрасте ${age}, с прекрасным ${color.toLowerCase()} окрасом.
+
+${personality}
+
+Больше всего ${name} любит ${favorite.toLowerCase()}.
+
+А ещё у этого котика есть особенная черта: ${details.toLowerCase()}.
+
+Сейчас ${name} ищет любящий дом и человека, который станет настоящей семьёй.
+
+Возможно, этот пушистый комочек счастья ждёт именно вас? 💕🏠`;
+
+    }
+
+  }
+
+
+  /* -------------------------
+     GENERATE
+  ------------------------- */
+
+  form.addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    const name = catName.value.trim();
+
+    if (!name) {
+
+      showToast(
+        language === "ru"
+          ? "Сначала напиши имя котика 🐱"
+          : "Please enter the cat's name 🐱"
+      );
+
+      catName.focus();
+
+      return;
+    }
+
+    generateText();
+
+  });
+
+
+  function generateText() {
+
+    const cat = {
+
+      name: catName.value.trim(),
+      age: catAge.value.trim(),
+      breed: catBreed.value.trim(),
+      color: catColor.value.trim(),
+      personality: catPersonality.value.trim(),
+      favorite: catFavorite.value.trim(),
+      details: catDetails.value.trim()
+
+    };
+
+
+    resultContainer.innerHTML = `
+
+      <div class="loading">
+
+        <div class="loading-cat">
+          🐱
+        </div>
+
+        <strong>
+          ${translations[language].loading}
+        </strong>
+
+        <div class="dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
+    `;
+
+
+    setTimeout(() => {
+
+      const text = generateDemoText(cat);
+
+      showResult(text, cat);
+
+      saveHistory(cat, text);
+
+      showToast(
+        translations[language].generated
+      );
+
+    }, 900);
+
+  }
+
+
+  /* -------------------------
+     RESULT
+  ------------------------- */
+
+  function showResult(text, cat) {
+
+    lastGeneratedText = text;
+
+    const t = translations[language];
+
+    const words =
+      text.trim().split(/\s+/).length;
+
+    const chars =
+      text.length;
+
+
+    resultContainer.innerHTML = `
+
+      <div class="result-content">
+
+        <div class="result-header">
+
+          <div>
+
+            <span class="result-tag">
+              ${getModeName()}
+            </span>
+
+          </div>
+
+          <div style="font-size:25px;">
+            🐾
+          </div>
+
+        </div>
+
+
+        <div class="result-text">
+          ${escapeHtml(text)}
+        </div>
+
+
+        <div class="result-footer">
+
+          <span>
+            ${words} ${t.words} · ${chars} ${t.chars}
+          </span>
+
+          <div class="result-buttons">
+
+            <button
+              class="small-button"
+              id="copyResult"
+            >
+              ${t.copy}
+            </button>
+
+            <button
+              class="small-button"
+              id="regenerateResult"
+            >
+              ${t.regenerate}
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+
+    document
+      .getElementById("copyResult")
+      .addEventListener("click", copyResult);
+
+
+    document
+      .getElementById("regenerateResult")
+      .addEventListener("click", generateText);
+
+  }
+
+
+  /* -------------------------
+     MODE NAME
+  ------------------------- */
+
+  function getModeName() {
+
+    const namesRu = {
+
+      profile: "Профиль",
+      instagram: "Instagram",
+      story: "История",
+      funny: "Мяу-юмор",
+      bio: "Bio",
+      social: "Соцсети"
+
+    };
+
+
+    const namesEn = {
+
+      profile: "Profile",
+      instagram: "Instagram",
+      story: "Story",
+      funny: "Cat Humor",
+      bio: "Bio",
+      social: "Social"
+
+    };
+
+
+    return language === "ru"
+      ? namesRu[selectedMode]
+      : namesEn[selectedMode];
+
+  }
+
+
+  /* -------------------------
+     COPY
+  ------------------------- */
+
+  async function copyResult() {
+
+    if (!lastGeneratedText) return;
+
+    try {
+
+      await navigator.clipboard.writeText(
+        lastGeneratedText
+      );
+
+      showToast(
+        translations[language].copied
+      );
+
+    } catch {
+
+      showToast(
+        "Не удалось скопировать 😿"
+      );
+
+    }
+
+  }
+
+
+  /* -------------------------
+     SURPRISE
+  ------------------------- */
+
+  document
+    .getElementById("surpriseButton")
+    .addEventListener("click", () => {
+
+      const randomCat =
+        cats[Math.floor(Math.random() * cats.length)];
+
+      fillCat(randomCat);
+
+      const modes =
+        [
+          "profile",
+          "instagram",
+          "story",
+          "funny",
+          "bio",
+          "social"
+        ];
+
+      selectedMode =
+        modes[Math.floor(Math.random() * modes.length)];
+
+
+      document
+        .querySelectorAll(".mode-button")
+        .forEach(button => {
+
+          button.classList.toggle(
+            "active",
+            button.dataset.mode === selectedMode
+          );
+
+        });
+
+
+      showToast(
+        translations[language].surpriseMessage
+      );
+
+      setTimeout(generateText, 250);
+
+    });
+
+
+  /* -------------------------
+     CLEAR
+  ------------------------- */
+
+  document
+    .getElementById("clearButton")
+    .addEventListener("click", () => {
+
+      form.reset();
+
+      selectedMode = "profile";
+
+      document
+        .querySelectorAll(".mode-button")
+        .forEach(button => {
+
+          button.classList.toggle(
+            "active",
+            button.dataset.mode === "profile"
+          );
+
+        });
+
+
+      updateEmptyResult();
+
+      showToast(
+        language === "ru"
+          ? "Профиль очищен 🧹"
+          : "Profile cleared 🧹"
+      );
+
+    });
+
+
+  /* -------------------------
+     EMPTY RESULT
+  ------------------------- */
+
+  function updateEmptyResult() {
+
+    const t = translations[language];
+
+    resultContainer.innerHTML = `
+
+      <div class="result-empty" id="resultEmpty">
+
+        <div>
+
+          <span class="big-cat">
+            🐱
+          </span>
+
+          <strong>
+            ${t.emptyTitle}
+          </strong>
+
+          <p style="margin-top:7px;">
+            ${t.emptyText}
+          </p>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* -------------------------
+     HISTORY
+  ------------------------- */
+
+  function saveHistory(cat, text) {
+
+    const item = {
+
+      id: Date.now(),
+
+      name: cat.name,
+
+      emoji: cats.find(c => c.name === cat.name)?.emoji || "🐱",
+
+      mode: selectedMode,
+
+      text: text,
+
+      time: new Date().toLocaleTimeString(
+        language === "ru"
+          ? "ru-RU"
+          : "en-US",
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      )
+
+    };
+
+
+    history.unshift(item);
+
+    history =
+      history.slice(0, 12);
+
+    localStorage.setItem(
+      "cattales-history",
+      JSON.stringify(history)
+    );
+
+    renderHistory();
+
+  }
+
+
+  function loadHistory() {
+
+    try {
+
+      history =
+        JSON.parse(
+          localStorage.getItem(
+            "cattales-history"
+          )
+        ) || [];
+
+    } catch {
+
+      history = [];
+
+    }
+
+  }
+
+
+  function renderHistory() {
+
+    const t = translations[language];
+
+    if (!history.length) {
+
+      historyList.innerHTML = `
+
+        <p style="color:var(--muted);font-size:13px;">
+          ${t.emptyHistory}
+        </p>
+
+      `;
+
+      return;
+
+    }
+
+
+    historyList.innerHTML = "";
+
+
+    history.forEach(item => {
+
+      const element =
+        document.createElement("div");
+
+      element.className = "history-item";
+
+      element.innerHTML = `
+
+        <div class="history-cat">
+          ${item.emoji}
+        </div>
+
+        <div class="history-info">
+
+          <strong>
+            ${escapeHtml(item.name)}
+          </strong>
+
+          <span>
+            ${getHistoryMode(item.mode)} · ${item.time}
+          </span>
+
+        </div>
+
+        <button
+          class="history-open"
+        >
+          ${language === "ru" ? "Открыть" : "Open"}
+        </button>
+
+      `;
+
+
+      element
+        .querySelector(".history-open")
+        .addEventListener("click", () => {
+
+          showResult(
+            item.text,
+            {
+              name: item.name
+            }
+          );
+
+          lastGeneratedText =
+            item.text;
+
+        });
+
+
+      historyList.appendChild(element);
+
+    });
+
+  }
+
+
+  function getHistoryMode(mode) {
+
+    const ru = {
+
+      profile: "Профиль",
+      instagram: "Instagram",
+      story: "История",
+      funny: "Юмор",
+      bio: "Bio",
+      social: "Соцсети"
+
+    };
+
+
+    const en = {
+
+      profile: "Profile",
+      instagram: "Instagram",
+      story: "Story",
+      funny: "Humor",
+      bio: "Bio",
+      social: "Social"
+
+    };
+
+
+    return language === "ru"
+      ? ru[mode]
+      : en[mode];
+
+  }
+
+
+  /* -------------------------
+     THEME
+  ------------------------- */
+
+  document
+    .getElementById("themeButton")
+    .addEventListener("click", () => {
+
+      document.body.classList.toggle("dark");
+
+      const dark =
+        document.body.classList.contains("dark");
+
+      localStorage.setItem(
+        "cattales-dark",
+        dark ? "1" : "0"
+      );
+
+      document.getElementById(
+        "themeButton"
+      ).textContent =
+        dark ? "☀️" : "🌙";
+
+    });
+
+
+  function loadTheme() {
+
+    const dark =
+      localStorage.getItem(
+        "cattales-dark"
+      ) === "1";
+
+    if (dark) {
+
+      document.body.classList.add("dark");
+
+      document.getElementById(
+        "themeButton"
+      ).textContent = "☀️";
+
+    }
+
+  }
+
+
+  /* -------------------------
+     PAW CLICKS
+  ------------------------- */
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      const paw =
+        document.createElement("div");
+
+      paw.className = "paw-print";
+
+      paw.style.left =
+        `${event.clientX - 12}px`;
+
+      paw.style.top =
+        `${event.clientY - 12}px`;
+
+      document.body.appendChild(paw);
+
+      setTimeout(() => {
+        paw.remove();
+      }, 1000);
+
+    }
+  );
+
+
+  /* -------------------------
+     TOAST
+  ------------------------- */
+
+  let toastTimer;
+
+  function showToast(message) {
+
+    const toast =
+      document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+      setTimeout(() => {
+
+        toast.classList.remove("show");
+
+      }, 2200);
+
+  }
+
+
+  /* -------------------------
+     ESCAPE HTML
+  ------------------------- */
+
+  function escapeHtml(text) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+  }
+
+
+  /* -------------------------
+     INITIALIZE
+  ------------------------- */
+
+  loadTheme();
+
+  loadHistory();
+
+  renderCats();
+
+  setLanguage("ru");
+
+</script>
+
+</body>
+</html>
